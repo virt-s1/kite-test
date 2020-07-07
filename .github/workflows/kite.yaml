@@ -1,0 +1,25 @@
+---
+name: kite pull request test
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  py_lint:
+    name: Python code lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Prepare environment
+        run: |
+          python -V
+          pip -V
+          pip install flake8
+
+      - name: Clone kite repository
+        uses: actions/checkout@v2
+
+      - name: Run flake8
+        run: flake8 *
