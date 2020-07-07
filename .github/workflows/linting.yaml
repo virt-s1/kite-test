@@ -1,5 +1,5 @@
 ---
-name: kite test
+name: linting
 
 on:
   pull_request:
