@@ -1,8 +1,11 @@
 ---
-name: kite pull request test
+name: kite test
 
 on:
   pull_request:
+    branches:
+      - "*"
+  push:
     branches:
       - master
 
@@ -14,9 +17,9 @@ jobs:
     steps:
       - name: Prepare environment
         run: |
-          python -V
-          pip -V
-          pip install flake8
+          python3 -V
+          pip3 -V
+          pip3 install flake8
 
       - name: Clone kite repository
         uses: actions/checkout@v2
