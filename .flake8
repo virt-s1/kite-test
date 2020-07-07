@@ -35,7 +35,7 @@ ignore =
 
 # Per file ignore
 per-file-ignores =
-    core/ssh_connection.py:E501
+    core/machine.py:E501
 
 # Specify the list of error codes you wish Flake8 to report.
 select =
