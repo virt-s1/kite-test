@@ -1,4 +1,5 @@
 import os
+import pathlib
 import time
 import socket
 import subprocess
@@ -7,18 +8,29 @@ import errno
 import sys
 import tempfile
 
-from . import exceptions
-from . import timeout as timeoutlib
+import exceptions
+import timeout as timeoutlib
+from constants import DEFAULT_IDENTITY_FILE, TEST_DIR
+
+REMOTE_MESSAGE = """
+SSH ACCESS
+  $ ssh -p {ssh_port} -i key/identity {ssh_user}@{ssh_address}
+"""
 
 
 class Machine(object):
-    def __init__(self, user, address, ssh_port, identity_file, verbose=False):
+    def __init__(self, user, address, ssh_port, identity_file=None, verbose=False):
         self.verbose = verbose
 
         self.ssh_user = user
-        self.identity_file = identity_file
         self.ssh_address = address
         self.ssh_port = ssh_port
+
+        identity_file_old = identity_file
+        self.identity_file = identity_file or DEFAULT_IDENTITY_FILE
+        if identity_file_old is None:
+            pathlib.Path(self.identity_file).chmod(0o600)
+
         self.ssh_master = None
         self.ssh_process = None
         self.ssh_reachable = False
@@ -116,8 +128,8 @@ class Machine(object):
     def _start_ssh_master(self):
         self._kill_ssh_master()
 
-        control = os.path.join(tempfile.gettempdir(), ".kite", "ssh-%h-%p-%r-" + str(os.getpid()))
-        os.makedirs(os.path.dirname(control), exist_ok=True)
+        control = pathlib.PurePath(tempfile.gettempdir()).joinpath(".kite", "ssh-%h-%p-%r-" + str(os.getpid()))
+        pathlib.Path(control.parent).mkdir(exist_ok=True)
 
         cmd = [
             "ssh",
@@ -127,7 +139,7 @@ class Machine(object):
             "-o", "UserKnownHostsFile=/dev/null",
             "-o", "BatchMode=yes",
             "-M",  # ControlMaster, no stdin
-            "-o", "ControlPath=" + control,
+            "-o", "ControlPath=" + str(control),
             "-o", "LogLevel=ERROR",
             "-l", self.ssh_user,
             self.ssh_address,
@@ -164,7 +176,7 @@ class Machine(object):
                 raise exceptions.Failure(
                     "SSH master process exited with code: {0}".format(proc.returncode))
 
-        self.ssh_master = control
+        self.ssh_master = str(control)
         self.ssh_process = proc
 
         if not self._check_ssh_master():
@@ -337,7 +349,7 @@ class Machine(object):
             raise subprocess.CalledProcessError(proc.returncode, command, output=output)
         return output
 
-    def upload(self, sources, dest, relative_dir="."):
+    def upload(self, sources, dest, relative_dir=TEST_DIR):
         """Upload a file into the test machine
 
         Arguments:
@@ -371,7 +383,7 @@ class Machine(object):
         self.message(" ".join(cmd))
         subprocess.check_call(cmd)
 
-    def download(self, source, dest, relative_dir="."):
+    def download(self, source, dest, relative_dir=TEST_DIR):
         """Download a file from the test machine.
         """
         assert source and dest
@@ -396,7 +408,7 @@ class Machine(object):
         self.message(" ".join(cmd))
         subprocess.check_call(cmd)
 
-    def download_dir(self, source, dest, relative_dir="."):
+    def download_dir(self, source, dest, relative_dir=TEST_DIR):
         """Download a directory from the test machine, recursively.
         """
         assert source and dest
@@ -514,3 +526,11 @@ class Machine(object):
         if len(messages) == 1 and "Cannot assign requested address" in messages[0]:
             messages = []
         return messages
+
+    def diagnose(self):
+        keys = {
+            "ssh_user": self.ssh_user,
+            "ssh_address": self.ssh_address,
+            "ssh_port": self.ssh_port,
+        }
+        return REMOTE_MESSAGE.format(**keys)
