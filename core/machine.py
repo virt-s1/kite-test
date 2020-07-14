@@ -349,7 +349,7 @@ class Machine(object):
             raise subprocess.CalledProcessError(proc.returncode, command, output=output)
         return output
 
-    def upload(self, sources, dest, relative_dir=TEST_DIR):
+    def upload(self, sources, dest, relative_dir=str(TEST_DIR)):
         """Upload a file into the test machine
 
         Arguments:
@@ -383,7 +383,7 @@ class Machine(object):
         self.message(" ".join(cmd))
         subprocess.check_call(cmd)
 
-    def download(self, source, dest, relative_dir=TEST_DIR):
+    def download(self, source, dest, relative_dir=str(TEST_DIR)):
         """Download a file from the test machine.
         """
         assert source and dest
@@ -408,7 +408,7 @@ class Machine(object):
         self.message(" ".join(cmd))
         subprocess.check_call(cmd)
 
-    def download_dir(self, source, dest, relative_dir=TEST_DIR):
+    def download_dir(self, source, dest, relative_dir=str(TEST_DIR)):
         """Download a directory from the test machine, recursively.
         """
         assert source and dest
@@ -478,7 +478,7 @@ class Machine(object):
 
         This can be passed to journal_messages() or audit_messages().
         """
-        return self.execute("journalctl --show-cursor -n0 -o cat | sed 's/^.*cursor: *//'")
+        return self.execute("journalctl --show-cursor -n0 -o cat | sed 's/^.*cursor: *//'").rstrip()
 
     def journal_messages(self, syslog_ids, log_level, cursor=None):
         """Return interesting journal messages"""

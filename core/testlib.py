@@ -66,7 +66,7 @@ class MachineCase(unittest.TestCase):
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
         # automatically cleaned up for a test, but you have to create it yourself
-        self.vm_tmpdir = "/var/lib/kitetest"
+        self.vm_tmpdir = "/var/lib/kite_test"
 
         # create a machine
         self.machine = machinelib.Machine(
@@ -79,7 +79,7 @@ class MachineCase(unittest.TestCase):
         # abort/fail the test if one of them does not work
         self.machine.wait_boot()
 
-        self.journal_start = self.machine.journal_cursor
+        self.journal_start = self.machine.journal_cursor()
         # helps with mapping journal output to particular tests
         name = "%s.%s" % (self.__class__.__name__, self._testMethodName)
         self.machine.execute("logger -p user.info 'KITETEST: start %s'" % name)
@@ -228,23 +228,22 @@ class MachineCase(unittest.TestCase):
             time.sleep(3)
 
     def sed_file(self, expr, path, apply_change_action=None):
-        '''sed a file on primary machine
+        '''sed a file on test machine
         The file will be restored during cleanup.
         The optional apply_change_action will be run both after sedding
         and after restoring the file.
         '''
         m = self.machine
-        m.execute("sed -i.cockpittest '{0}' {1}".format(expr, path))
+        m.execute("sed -i.kite_test '{0}' {1}".format(expr, path))
         if apply_change_action:
             m.execute(apply_change_action)
 
-        if self.is_nondestructive():
-            if apply_change_action:
-                self.addCleanup(m.execute, apply_change_action)
-            self.addCleanup(m.execute, "mv {0}.cockpittest {0}".format(path))
+        if apply_change_action:
+            self.addCleanup(m.execute, apply_change_action)
+        self.addCleanup(m.execute, "mv {0}.kite_test {0}".format(path))
 
     def restore_dir(self, path, post_restore_action=None, reboot_safe=False):
-        '''Backup/restore a directory for a nondestructive test
+        '''Backup/restore a directory for a test
         This takes care to not ever touch the original content on disk,
         but uses transient overlays.
         As this uses a bind mount, it does not work for files that get
@@ -256,9 +255,6 @@ class MachineCase(unittest.TestCase):
         will just backup/restore the directory instead of bind-mounting,
         which is less robust.
         '''
-        if not self.is_nondestructive():
-            return  # skip for efficiency reasons
-
         exists = self.machine.execute("if test -e %s; then echo yes; fi" % path).strip() != ""
         if not exists:
             self.addCleanup(self.machine.execute, "rm -rf {0}".format(path))
@@ -413,7 +409,7 @@ def print_tests(tests):
 
 
 def arg_parser(enable_sit=True):
-    parser = argparse.ArgumentParser(description='Run Cockpit test(s)')
+    parser = argparse.ArgumentParser(description='Run kite test(s)')
     parser.add_argument('-v', '--verbose', dest="verbosity", action='store_const',
                         const=2, help='Verbose output')
     parser.add_argument('-t', "--trace", dest='trace', action='store_true',
