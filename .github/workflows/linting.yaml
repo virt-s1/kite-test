@@ -5,26 +5,21 @@ on:
   pull_request:
     branches:
       - "*"
-  push:
-    branches:
-      - master
 
 jobs:
   py_lint:
     name: linting
-    runs-on: ubuntu-latest
+    runs-on: kite-runner
 
     steps:
-      - name: Setup python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-
-      - name: Install flake8
-        run: pip install flake8
-
       - name: Checkout kite repository
         uses: actions/checkout@v2
 
       - name: Run flake8
         run: make flake8
+
+      - name: Remove runner
+        if: ${{ always() }}
+        run: |
+          RUNNER_NAME=$(cat /etc/hostname)
+          curl -X PUT $KITE_CONTROLLER_API_NETLOC/runner/delete/$RUNNER_NAME > /dev/null 2>&1 &
