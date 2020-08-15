@@ -34,7 +34,7 @@ class Machine(object):
         self.ssh_master = None
         self.ssh_process = None
         self.ssh_reachable = False
-        self.label = "{}@{}:{}".format(self.ssh_user, self.ssh_address, self.ssh_port)
+        self.label = "{}@{}@{}".format(self.ssh_user, self.ssh_address, self.ssh_port)
 
     def disconnect(self):
         self.ssh_reachable = False
