@@ -15,9 +15,13 @@ allowed_journal_messages = [
     "IRQ fixup: irq.*move in progress.*old vector.*",
     "IRQ .*: no longer affine to CPU.*",
     "process .* \\(cpuhotplug_do_s\\) no longer affine to cpu.*",
+    "cpu.*spinlock event irq.*",
+    "Uhhuh. NMI received for unknown reason.*",
+    "Do you have a strange power saving mode enabled.*",
+    "Dazed and confused, but trying to continue",
     # fs
     "ICMPv6:.*deprecated.*syscall.*net.ipv6.neigh.default.base_reachable_time.*",
-    "rtc_cmos 00:01: Deprecated ABI, please use nvmem",
+    "rtc_cmos.*Deprecated ABI, please use nvmem",
     "ISOFS: Invalid session number or type of track",
     "ISOFS: Invalid session number",
     # net.tcp_cmds
