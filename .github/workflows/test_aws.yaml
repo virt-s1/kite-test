@@ -1,0 +1,96 @@
+---
+name: RHEL 8.x on AWS EC2
+
+on:
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  t2_medium:
+    name: Run test on EC2 t2.medium
+    runs-on: kite-runner
+
+    steps:
+      - name: Checkout kite-test repository
+        uses: actions/checkout@v2
+
+      - name: Checkout kite-deploy repository
+        uses: actions/checkout@v2
+        with:
+          repository: virt-s1/kite-deploy
+          path: kite-deploy
+
+      - name: Deploy EC2 t2.medium instance
+        run: cd kite-deploy && AWS_INSTANCE_TPYE=t2.medium ansible-playbook -v -i inventory -e cloud_platform=aws deploy.yaml
+
+      - name: Run test
+        run: |
+          GUEST_IP=$(awk -F "=" '/guest_ip/ {print $2}' kite-deploy/inventory)
+          test/check-ltp -vst --user=admin --address=$GUEST_IP
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: ltp-console-output-t2medium
+          path: ./log
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: test-log-t2medium
+          path: ./Test*FAIL.log.gz
+
+      - name: Remove EC2 instance
+        if: ${{ always() }}
+        run: cd kite-deploy && ansible-playbook -v -i inventory -e cloud_platform=aws remove.yaml
+
+      - name: Remove runner
+        if: ${{ always() }}
+        run: |
+          RUNNER_NAME=$(cat /etc/hostname)
+          curl -X PUT $KITE_CONTROLLER_API_NETLOC/runner/delete/$RUNNER_NAME > /dev/null 2>&1 &
+
+  t3_medium:
+    name: Run test on EC2 t3.medium
+    runs-on: kite-runner
+
+    steps:
+      - name: Checkout kite-test repository
+        uses: actions/checkout@v2
+
+      - name: Checkout kite-deploy repository
+        uses: actions/checkout@v2
+        with:
+          repository: virt-s1/kite-deploy
+          path: kite-deploy
+
+      - name: Deploy EC2 t3.medium instance
+        run: cd kite-deploy && AWS_INSTANCE_TPYE=t3.medium ansible-playbook -v -i inventory -e cloud_platform=aws deploy.yaml
+
+      - name: Run test
+        run: |
+          GUEST_IP=$(awk -F "=" '/guest_ip/ {print $2}' kite-deploy/inventory)
+          test/check-ltp -vst --user=admin --address=$GUEST_IP
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: ltp-console-output-t3medium
+          path: ./log
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: test-log-t3medium
+          path: ./Test*FAIL.log.gz
+
+      - name: Remove EC2 instance
+        if: ${{ always() }}
+        run: cd kite-deploy && ansible-playbook -v -i inventory -e cloud_platform=aws remove.yaml
+
+      - name: Remove runner
+        if: ${{ always() }}
+        run: |
+          RUNNER_NAME=$(cat /etc/hostname)
+          curl -X PUT $KITE_CONTROLLER_API_NETLOC/runner/delete/$RUNNER_NAME > /dev/null 2>&1 &
