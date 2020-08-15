@@ -1,5 +1,7 @@
 #!/usr/bin/python3 -u
 
+from pathlib import Path
+
 import parent
 import testlib
 
@@ -27,10 +29,10 @@ def runltp(test, case):
     m = test.machine
 
     m.execute("cd /opt/ltp && "
-              f"sudo ./runltp -p -q -f {case} -o {case}.console -l {case}.result -S skip.ltp",
+              f"sudo ./runltp -p -q -f {case} -o {case}.console -l {case}.result -S $HOME/skip.ltp",
               timeout=1800)
-    m.download(f"/opt/ltp/output/{case}.console", "./")
-    m.download(f"/opt/ltp/results/{case}.result", "./")
+    m.download(f"/opt/ltp/output/{case}.console", str(Path.cwd() / "log"))
+    m.download(f"/opt/ltp/results/{case}.result", str(Path.cwd() / "log"))
     test.addCleanup(test.machine.execute, "sudo rm -rf /opt/ltp/{output,results}")
 
 
@@ -44,9 +46,12 @@ class TestLtp(testlib.MachineCase):
         if runltp == "nono":
             self.skipTest("Running ltp test needs have ltp installed into /opt/ltp")
 
-        self.machine.upload(["files/skip.ltp"], "/opt/ltp")
+        self.machine.upload(["files/skip.ltp"], "$HOME")
 
         self.addCleanup(self.machine.execute, "sudo rm -f /opt/ltp/skip.ltp")
+
+        # create log folder to save *.console and *.result
+        (Path.cwd() / "log").mkdir(exist_ok=True)
 
     def test_commands(self):
         runltp(self, "commands")

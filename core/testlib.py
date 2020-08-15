@@ -86,7 +86,7 @@ class MachineCase(unittest.TestCase):
         self.addCleanup(self.machine.execute, "logger -p user.info 'KITETEST: end %s'" % name)
 
         # core dumps get copied per-test, don't clobber subsequent tests with them
-        self.addCleanup(self.machine.execute, "rm -rf /var/lib/systemd/coredump")
+        self.addCleanup(self.machine.execute, "sudo rm -rf /var/lib/systemd/coredump")
 
         # temporary directory in the VM
         self.addCleanup(

@@ -29,6 +29,18 @@ jobs:
           GUEST_IP=$(awk -F "=" '/guest_ip/ {print $2}' kite-deploy/inventory)
           test/check-ltp -vst --user=admin --address=$GUEST_IP
 
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: ltp-logs
+          path: ./log
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: test-log
+          path: ./Test*FAIL.log.gz
+
       # - name: Remove ESXi VM
       #   if: ${{ always() }}
       #   run: cd kite-deploy && ansible-playbook -v -i inventory -e cloud_platform=esxi remove.yaml
