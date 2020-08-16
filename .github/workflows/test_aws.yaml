@@ -7,8 +7,11 @@ on:
       - "*"
 
 jobs:
-  t2_medium:
-    name: Run test on EC2 t2.medium
+  instance_test:
+    strategy:
+      matrix:
+        instance_type: [t2.medium, t3.medium, t3a.medium, m4.large]
+    name: Run test on EC2 ${{ matrix.instance_type }}
     runs-on: kite-runner
 
     steps:
@@ -21,8 +24,8 @@ jobs:
           repository: virt-s1/kite-deploy
           path: kite-deploy
 
-      - name: Deploy EC2 t2.medium instance
-        run: cd kite-deploy && AWS_INSTANCE_TPYE=t2.medium ansible-playbook -v -i inventory -e cloud_platform=aws deploy.yaml
+      - name: Deploy EC2 ${{ matrix.instance_type }} instance
+        run: cd kite-deploy && AWS_INSTANCE_TPYE=${{ matrix.instance_type }} ansible-playbook -v -i inventory -e cloud_platform=aws deploy.yaml
 
       - name: Run test
         run: |
@@ -32,13 +35,13 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
-          name: ltp-console-output-t2medium
+          name: ltp-console-output-${{ matrix.instance_type }}
           path: ./log
 
       - uses: actions/upload-artifact@v2
         if: ${{ failure() }}
         with:
-          name: test-log-t2medium
+          name: test-log-${{ matrix.instance_type }}
           path: ./Test*FAIL.log.gz
 
       - name: Remove EC2 instance
@@ -51,46 +54,134 @@ jobs:
           RUNNER_NAME=$(cat /etc/hostname)
           curl -X PUT $KITE_CONTROLLER_API_NETLOC/runner/delete/$RUNNER_NAME > /dev/null 2>&1 &
 
-  t3_medium:
-    name: Run test on EC2 t3.medium
-    runs-on: kite-runner
+  # t3_medium:
+  #   name: Run test on EC2 t3.medium
+  #   runs-on: kite-runner
 
-    steps:
-      - name: Checkout kite-test repository
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout kite-test repository
+  #       uses: actions/checkout@v2
 
-      - name: Checkout kite-deploy repository
-        uses: actions/checkout@v2
-        with:
-          repository: virt-s1/kite-deploy
-          path: kite-deploy
+  #     - name: Checkout kite-deploy repository
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: virt-s1/kite-deploy
+  #         path: kite-deploy
 
-      - name: Deploy EC2 t3.medium instance
-        run: cd kite-deploy && AWS_INSTANCE_TPYE=t3.medium ansible-playbook -v -i inventory -e cloud_platform=aws deploy.yaml
+  #     - name: Deploy EC2 t3.medium instance
+  #       run: cd kite-deploy && AWS_INSTANCE_TPYE=t3.medium ansible-playbook -v -i inventory -e cloud_platform=aws deploy.yaml
 
-      - name: Run test
-        run: |
-          GUEST_IP=$(awk -F "=" '/guest_ip/ {print $2}' kite-deploy/inventory)
-          test/check-ltp -vst --user=admin --address=$GUEST_IP
+  #     - name: Run test
+  #       run: |
+  #         GUEST_IP=$(awk -F "=" '/guest_ip/ {print $2}' kite-deploy/inventory)
+  #         test/check-ltp -vst --user=admin --address=$GUEST_IP
 
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: ltp-console-output-t3medium
-          path: ./log
+  #     - uses: actions/upload-artifact@v2
+  #       if: ${{ always() }}
+  #       with:
+  #         name: ltp-console-output-t3medium
+  #         path: ./log
 
-      - uses: actions/upload-artifact@v2
-        if: ${{ failure() }}
-        with:
-          name: test-log-t3medium
-          path: ./Test*FAIL.log.gz
+  #     - uses: actions/upload-artifact@v2
+  #       if: ${{ failure() }}
+  #       with:
+  #         name: test-log-t3medium
+  #         path: ./Test*FAIL.log.gz
 
-      - name: Remove EC2 instance
-        if: ${{ always() }}
-        run: cd kite-deploy && ansible-playbook -v -i inventory -e cloud_platform=aws remove.yaml
+  #     - name: Remove EC2 instance
+  #       if: ${{ always() }}
+  #       run: cd kite-deploy && ansible-playbook -v -i inventory -e cloud_platform=aws remove.yaml
 
-      - name: Remove runner
-        if: ${{ always() }}
-        run: |
-          RUNNER_NAME=$(cat /etc/hostname)
-          curl -X PUT $KITE_CONTROLLER_API_NETLOC/runner/delete/$RUNNER_NAME > /dev/null 2>&1 &
+  #     - name: Remove runner
+  #       if: ${{ always() }}
+  #       run: |
+  #         RUNNER_NAME=$(cat /etc/hostname)
+  #         curl -X PUT $KITE_CONTROLLER_API_NETLOC/runner/delete/$RUNNER_NAME > /dev/null 2>&1 &
+
+  # t3a_medium:
+  #   name: Run test on EC2 t3a.medium
+  #   runs-on: kite-runner
+
+  #   steps:
+  #     - name: Checkout kite-test repository
+  #       uses: actions/checkout@v2
+
+  #     - name: Checkout kite-deploy repository
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: virt-s1/kite-deploy
+  #         path: kite-deploy
+
+  #     - name: Deploy EC2 t3a.medium instance
+  #       run: cd kite-deploy && AWS_INSTANCE_TPYE=t3a.medium ansible-playbook -v -i inventory -e cloud_platform=aws deploy.yaml
+
+  #     - name: Run test
+  #       run: |
+  #         GUEST_IP=$(awk -F "=" '/guest_ip/ {print $2}' kite-deploy/inventory)
+  #         test/check-ltp -vst --user=admin --address=$GUEST_IP
+
+  #     - uses: actions/upload-artifact@v2
+  #       if: ${{ always() }}
+  #       with:
+  #         name: ltp-console-output-t3amedium
+  #         path: ./log
+
+  #     - uses: actions/upload-artifact@v2
+  #       if: ${{ failure() }}
+  #       with:
+  #         name: test-log-t3amedium
+  #         path: ./Test*FAIL.log.gz
+
+  #     - name: Remove EC2 instance
+  #       if: ${{ always() }}
+  #       run: cd kite-deploy && ansible-playbook -v -i inventory -e cloud_platform=aws remove.yaml
+
+  #     - name: Remove runner
+  #       if: ${{ always() }}
+  #       run: |
+  #         RUNNER_NAME=$(cat /etc/hostname)
+  #         curl -X PUT $KITE_CONTROLLER_API_NETLOC/runner/delete/$RUNNER_NAME > /dev/null 2>&1 &
+
+  # m4.large:
+  #   name: Run test on EC2 m4.large
+  #   runs-on: kite-runner
+
+  #   steps:
+  #     - name: Checkout kite-test repository
+  #       uses: actions/checkout@v2
+
+  #     - name: Checkout kite-deploy repository
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: virt-s1/kite-deploy
+  #         path: kite-deploy
+
+  #     - name: Deploy EC2 m4.large instance
+  #       run: cd kite-deploy && AWS_INSTANCE_TPYE=m4.large ansible-playbook -v -i inventory -e cloud_platform=aws deploy.yaml
+
+  #     - name: Run test
+  #       run: |
+  #         GUEST_IP=$(awk -F "=" '/guest_ip/ {print $2}' kite-deploy/inventory)
+  #         test/check-ltp -vst --user=admin --address=$GUEST_IP
+
+  #     - uses: actions/upload-artifact@v2
+  #       if: ${{ always() }}
+  #       with:
+  #         name: ltp-console-output-t3amedium
+  #         path: ./log
+
+  #     - uses: actions/upload-artifact@v2
+  #       if: ${{ failure() }}
+  #       with:
+  #         name: test-log-t3amedium
+  #         path: ./Test*FAIL.log.gz
+
+  #     - name: Remove EC2 instance
+  #       if: ${{ always() }}
+  #       run: cd kite-deploy && ansible-playbook -v -i inventory -e cloud_platform=aws remove.yaml
+
+  #     - name: Remove runner
+  #       if: ${{ always() }}
+  #       run: |
+  #         RUNNER_NAME=$(cat /etc/hostname)
+  #         curl -X PUT $KITE_CONTROLLER_API_NETLOC/runner/delete/$RUNNER_NAME > /dev/null 2>&1 &
