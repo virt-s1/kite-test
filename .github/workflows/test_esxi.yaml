@@ -7,8 +7,11 @@ on:
       - "*"
 
 jobs:
-  esxi_bios:
-    name: Run test on ESXi 7.0 VM (BIOS)
+  firmware_test:
+    strategy:
+      matrix:
+        firmware: [bios, efi]
+    name: Run test on ESXi 7.0 VM ${{ matrix.firmware }}
     runs-on: kite-runner
 
     steps:
@@ -21,8 +24,8 @@ jobs:
           repository: virt-s1/kite-deploy
           path: kite-deploy
 
-      - name: Deploy ESXi BIOS VM
-        run: cd kite-deploy && ansible-playbook -v -i inventory -e esxi_firmware=bios -e cloud_platform=esxi deploy.yaml
+      - name: Deploy ESXi ${{ matrix.firmware }} VM
+        run: cd kite-deploy && ansible-playbook -v -i inventory -e esxi_firmware=${{ matrix.firmware }} -e cloud_platform=esxi deploy.yaml
 
       - name: Run test
         run: |
@@ -32,57 +35,13 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
-          name: ltp-console-output-bios
+          name: ltp-console-output-${{ matrix.firmware }}
           path: ./log
 
       - uses: actions/upload-artifact@v2
         if: ${{ failure() }}
         with:
-          name: test-log-bios
-          path: ./Test*FAIL.log.gz
-
-      - name: Remove ESXi VM
-        if: ${{ always() }}
-        run: cd kite-deploy && ansible-playbook -v -i inventory -e cloud_platform=esxi remove.yaml
-
-      - name: Remove runner
-        if: ${{ always() }}
-        run: |
-          RUNNER_NAME=$(cat /etc/hostname)
-          curl -X PUT $KITE_CONTROLLER_API_NETLOC/runner/delete/$RUNNER_NAME > /dev/null 2>&1 &
-
-  esxi_efi:
-    name: Run test on ESXi 7.0 VM (EFI)
-    runs-on: kite-runner
-
-    steps:
-      - name: Checkout kite-test repository
-        uses: actions/checkout@v2
-
-      - name: Checkout kite-deploy repository
-        uses: actions/checkout@v2
-        with:
-          repository: virt-s1/kite-deploy
-          path: kite-deploy
-
-      - name: Deploy ESXi EFI VM
-        run: cd kite-deploy && ansible-playbook -v -i inventory -e esxi_firmware=efi -e cloud_platform=esxi deploy.yaml
-
-      - name: Run test
-        run: |
-          GUEST_IP=$(awk -F "=" '/guest_ip/ {print $2}' kite-deploy/inventory)
-          test/check-ltp -vst --user=admin --address=$GUEST_IP
-
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: ltp-console-output-efi
-          path: ./log
-
-      - uses: actions/upload-artifact@v2
-        if: ${{ failure() }}
-        with:
-          name: test-log-efi
+          name: test-log-${{ matrix.firmware }}
           path: ./Test*FAIL.log.gz
 
       - name: Remove ESXi VM
