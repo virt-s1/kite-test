@@ -19,6 +19,7 @@ allowed_journal_messages = [
     "Uhhuh. NMI received for unknown reason.*",
     "Do you have a strange power saving mode enabled.*",
     "Dazed and confused, but trying to continue",
+    "NOHZ: local_softirq_pending.*",
     # fs
     "ICMPv6:.*deprecated.*syscall.*net.ipv6.neigh.default.base_reachable_time.*",
     "rtc_cmos.*Deprecated ABI, please use nvmem",
