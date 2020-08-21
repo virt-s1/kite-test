@@ -31,7 +31,10 @@ allowed_journal_messages = [
     "(audit: )?type=1400 audit.*: avc:  denied .* comm=\"dhclient\" .*",
     # mm
     "hrtimer: interrupt took .* ns",
-    "min_free_kbytes invoked oom-killer: .*"
+    "min_free_kbytes invoked oom-killer: .*",
+    "clocksource: timekeeping watchdog on CPU.*clocksource 'tsc'.*skew is too large.*",
+    "clocksource:.*'kvm-clock' wd_now.*wd_last.*mask.*",
+    "clocksource:.*'tsc' cs_now.*cs_last.*mask.*"
 ]
 
 

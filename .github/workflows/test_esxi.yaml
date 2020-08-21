@@ -1,5 +1,5 @@
 ---
-name: RHEL 8.3 on ESXi 7.0
+name: RHEL 8.x on ESXi 7.0
 
 on:
   pull_request:
