@@ -1,0 +1,52 @@
+---
+name: RHEL 8.x on OpenStack
+
+on:
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  instance_test:
+    name: Run test on openstack
+    runs-on: kite-runner
+
+    steps:
+      - name: Checkout kite-test repository
+        uses: actions/checkout@v2
+
+      - name: Checkout kite-deploy repository
+        uses: actions/checkout@v2
+        with:
+          repository: virt-s1/kite-deploy
+          path: kite-deploy
+
+      - name: Deploy openstack instance
+        run: cd kite-deploy && ansible-playbook -v -i inventory -e cloud_platform=openstack deploy.yaml
+
+      - name: Run test
+        run: |
+          GUEST_IP=$(awk -F "=" '/guest_ip/ {print $2}' kite-deploy/inventory)
+          test/check-ltp -vst --user=admin --address=$GUEST_IP
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: ltp-console-output-openstack
+          path: ./log
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: test-log-openstack
+          path: ./Test*FAIL.log.gz
+
+      - name: Remove openstack instance
+        if: ${{ always() }}
+        run: cd kite-deploy && ansible-playbook -v -i inventory -e cloud_platform=openstack remove.yaml
+
+      - name: Remove runner
+        if: ${{ always() }}
+        run: |
+          RUNNER_NAME=$(cat /etc/hostname)
+          curl -X PUT $KITE_CONTROLLER_API_NETLOC/runner/delete/$RUNNER_NAME > /dev/null 2>&1 &

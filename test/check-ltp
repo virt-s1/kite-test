@@ -23,6 +23,7 @@ allowed_journal_messages = [
     # fs
     "ICMPv6:.*deprecated.*syscall.*net.ipv6.neigh.default.base_reachable_time.*",
     "rtc_cmos.*Deprecated ABI, please use nvmem",
+    "WARNING! power/level is deprecated; use power/control instead",
     "ISOFS: Invalid session number or type of track",
     "ISOFS: Invalid session number",
     # net.tcp_cmds
