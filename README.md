@@ -1,10 +1,13 @@
 # kite-test
 
 ![linting](https://github.com/virt-s1/kite-test/workflows/linting/badge.svg?branch=master)
+![RHEL 8.x on AWS EC2](https://github.com/virt-s1/kite-test/workflows/RHEL%208.x%20on%20AWS%20EC2/badge.svg)
+![RHEL 8.x on ESXi 7.0](https://github.com/virt-s1/kite-test/workflows/RHEL%208.x%20on%20ESXi%207.0/badge.svg)
+![RHEL 8.x on OpenStack](https://github.com/virt-s1/kite-test/workflows/RHEL%208.x%20on%20OpenStack/badge.svg)
 
 `kite-test` includes a simple test framework and test cases together to make running and writing test as easy as possible.
 
-Test framework is based on unittest with some enhancement to work perfect with Linux application/kernel test on cloud, like AWS EC2, Azure, VMWare ESXi, etc.
+Test framework is based on unittest with some enhancement to work perfect with Linux application/kernel test on cloud, like AWS EC2, VMWare ESXi, and OpenStack.
 
 Test code is located in `test` folder and framework can be found in `core` folder.
 
@@ -53,4 +56,4 @@ The test case totally follows Python unittest. The only difference is use sub-cl
 
 ## Test for test case
 
-Test case sending in PR will trigger Github Action CI. All test cases in PR will be run on cloud platforms, include AWS EC2 and VMWare ESXi. Passing tests on cloud platforms is a must-have condition of PR merge.
+Test case sending in PR will trigger Github Action CI. All test cases in PR will be run on cloud platforms, include AWS EC2 ,VMWare ESXi, and OpenStack. Passing tests on cloud platforms is a must-have condition of PR merge.
