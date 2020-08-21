@@ -72,6 +72,7 @@ oom04
 oom05
 swapping01
 min_free_kbytes
+ipneigh01_arp
 ftp
 rcp
 rlogin

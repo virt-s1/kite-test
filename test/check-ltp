@@ -37,12 +37,15 @@ allowed_journal_messages = [
 def runltp(test, case):
     m = test.machine
 
-    m.execute("cd /opt/ltp && "
-              f"sudo ./runltp -p -q -f {case} -o {case}.console -l {case}.result -S $HOME/skip.ltp",
-              timeout=1800)
-    m.download(f"/opt/ltp/output/{case}.console", str(Path.cwd() / "log"))
-    m.download(f"/opt/ltp/results/{case}.result", str(Path.cwd() / "log"))
-    test.addCleanup(test.machine.execute, "sudo rm -rf /opt/ltp/{output,results}")
+    # get console and result output no matter test passed or failed
+    try:
+        m.execute(f"cd /opt/ltp && sudo ./runltp -p -q -f {case} "
+                  f"-o {case}.console -l {case}.result -S $HOME/skip.ltp",
+                  timeout=1800)
+    finally:
+        m.download(f"/opt/ltp/output/{case}.console", str(Path.cwd() / "log"))
+        m.download(f"/opt/ltp/results/{case}.result", str(Path.cwd() / "log"))
+        test.addCleanup(test.machine.execute, "sudo rm -rf /opt/ltp/{output,results}")
 
 
 @testlib.timeout(2400)
