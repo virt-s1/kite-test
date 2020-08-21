@@ -30,6 +30,7 @@ allowed_journal_messages = [
     ".*:IN=lo OUT= .* SRC=127.0.0.1 DST=127.0.0.1 .*",
     "(audit: )?type=1400 audit.*: avc:  denied .* comm=\"dhclient\" .*",
     # mm
+    "hrtimer: interrupt took .* ns",
     "min_free_kbytes invoked oom-killer: .*"
 ]
 
