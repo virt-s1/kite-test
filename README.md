@@ -1,59 +1,118 @@
-# kite-test
+# os-tests
 
-![linting](https://github.com/virt-s1/kite-test/workflows/linting/badge.svg?branch=master)
-![RHEL 8.x on AWS EC2](https://github.com/virt-s1/kite-test/workflows/RHEL%208.x%20on%20AWS%20EC2/badge.svg)
-![RHEL 8.x on ESXi 7.0](https://github.com/virt-s1/kite-test/workflows/RHEL%208.x%20on%20ESXi%207.0/badge.svg)
-![RHEL 8.x on OpenStack](https://github.com/virt-s1/kite-test/workflows/RHEL%208.x%20on%20OpenStack/badge.svg)
+## Introduction
 
-`kite-test` includes a simple test framework and test cases together to make running and writing test as easy as possible.
+os-tests is a lightweight, fast check and tests collection for Linux OS.
 
-Test framework is based on unittest with some enhancement to work perfect with Linux application/kernel test on cloud, like AWS EC2, VMWare ESXi, and OpenStack.
+## Installation
 
-Test code is located in `test` folder and framework can be found in `core` folder.
+### Install from pip
 
-## How to run test?
+`# pip install os-tests`
 
-Run a single test suite:
+### Install from source code
 
-    test/check-ltp -vst --user=<wheel group user> --address=<VM/instance IP address> --port=<SSH port>
+```bash
+# git clone https://github.com/liangxiao1/os-tests.git
+# cd os-tests
+# python3 setup.py install
+```
 
-Parameters:
+### Build wheel from source code and install it
 
-    -h, --help                  Show this help message and exit
-    -v, --verbose               Verbose output
-    -t, --trace                 Trace machine boot and commands
-    -q, --quiet                 Quiet output
-    -s, --sit                   Sit and wait after test failure
-    -l, --list                  Print the list of tests that would be executed
-    --user USER                 SSH login username
-    --address ADDRESS           Test machine IP address
-    --port PORT                 SSH port
-    --identity IDENTITY_FILE    SSH private key
+```bash
+# python3 setup.py sdist bdist_wheel
+# pip install -U dist/os_tests-0.0.3-py3-none-any.whl
+```
 
-Try to run test with wheel group user,  not `root`.
+### Public new wheels on [pypi](https://pypi.org/project/os-tests/) (maintainer use only)
 
-## How to write test case?
+`# python3 -m twine upload  dist/*`
 
-The test case totally follows Python unittest. The only difference is use sub-class `testlib.MachineCase` instead of `unittest.TestCase`. The [sample](./test/sample) is a good sample for writing test case. Here're some tips of writing test case:
+## Run test
 
-* Please name your test file with `check-*` format without extension. That'll be easy for us to run test case.
-* Try to write test case for all cloud platforms, and make test case as common as possible.
-* Test case here is not grouped by cloud platform, but grouped by feature.
-* Try to use `addCleanup` to clean up all you setup after each test because reboot on cloud platform is not a good choice.
-* Please do not clean up your setup in `tearDown` and use `addCleanup` instead. And write `addCleanup` just after your setup, that makes your test easy to read and clean.
-* `kite-test` test framework provides some helper functions which are really helpful when you write test case.
-  * `execute()`: run any shell command and return output back.
-  * `upload()`: upload one and more files to test machine.
-  * `download()`: download one file from test machine to local.
-  * `download_dir()`: download a folder from test machine to local.
-  * `write()`: write content to a file in test machine.
-  * `sed_file()`: use regRex to sed a file in test machine.
-  * `restore_file()`: restore a file in test machine after test.
-  * `restore_dir()`: restore a folder in test machine after test
-* `kite-test` test framework will check kernel journalctl log after each test, any logs found will make test fail.
-* `kite-test` test framework also checks core dump file and download it back if it exists after each test.
-* Test case code follows `flake8` linting rule. Please lint your code before send PR.
+### Run all os_tests supported cases(os-tests cli was implemented in v0.0.10)
 
-## Test for test case
+`# os-tests`  
+note: you may add "/usr/local/bin" to your $PATH prior RHEL8  
+or  
+`# python3 -m unittest -v os_tests.os_tests_all`
 
-Test case sending in PR will trigger Github Action CI. All test cases in PR will be run on cloud platforms, include AWS EC2 ,VMWare ESXi, and OpenStack. Passing tests on cloud platforms is a must-have condition of PR merge.
+### List all supported cases only without run
+
+`# os-tests -l`
+
+#### Filter case name with keywords ltp and virtwhat
+
+`# os-tests -l -p ltp,virtwhat`
+
+#### Filter case name with keywords ltp and skip test_ltp_ipsec_icmp
+
+`# os-tests -l -p ltp -s test_ltp_ipsec_icmp`
+
+### Run all cases in one file
+
+`# os-tests -p test_general_check`  
+or  
+`# python3 -m unittest -v os_tests.tests.test_general_check`
+
+### Run single case in one file
+
+`# os-tests -p test_change_clocksource`  
+or  
+`# python3 -m unittest -v os_tests.tests.test_general_test.TestGeneralTest.test_change_clocksource`
+
+### The log file
+
+The console only shows the case test result as summary.
+The test debug log file are saved in "/tmp/os_tests_result" following case name by default.
+You can change "results_dir" in "cfg/os-tests.yaml" to save log in other place.
+
+Below is an example:
+
+```bash
+# python3 -m unittest -v os_tests.tests.test_general_test.TestGeneralTest.test_change_clocksource
+test_change_clocksource (os_tests.tests.test_general_test.TestGeneralTest) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.117s
+
+OK
+# ls -l /tmp/os_tests_result/
+total 8
+-rw-r--r--. 1 root root 4224 Aug 26 10:11 os_tests.tests.test_general_test.TestGeneralTest.test_change_clocksource.debug
+```
+
+### The installed files
+
+All test files are located in "os_tests/tests" directory.
+
+```bash
+# pip3 show -f os-tests
+Name: os-tests
+Version: 0.0.5
+Summary: Lightweight, fast check and tests collection for Linux OS
+Home-page: https://github.com/liangxiao1/os-tests
+Author: Xiao Liang
+Author-email: xiliang@redhat.com
+License: GPLv3+
+Location: /usr/local/lib/python3.6/site-packages
+Requires: PyYAML
+Files:
+  os_tests/__init__.py
+  os_tests/cfg/os-tests.yaml
+  os_tests/data/baseline_log.json
+  os_tests/libs/__init__.py
+  os_tests/libs/utils_lib.py
+  os_tests/os_tests_all.py
+  os_tests/tests/__init__.py
+  os_tests/tests/test_cloud_init.py
+  os_tests/tests/test_general_check.py
+  os_tests/tests/test_general_test.py
+  os_tests/tests/test_ltp.py
+
+```
+
+### Contribution
+
+You are welcomed to create pull request or raise issue.

@@ -1,0 +1,452 @@
+{
+    "msg_1": {
+        "content": "NMI watchdog: Perf event create on CPU 0 failed with -2",
+        "analyze": "No such file or directory, it maybe expected as cpu not support",
+        "branch": "rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_2": {
+        "content": "acpi PNP0A03:00: fail to add MMCONFIG information, can't access extended PCI configuration space under this bridge.",
+        "analyze": "Xen specified",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_3": {
+        "content": "acpi PNP0A03:00: _OSC failed (AE_NOT_FOUND); disabling ASPM",
+        "analyze": "Both in xen and kvm, it mostly like a information to disable aspm",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_4": {
+        "content": "systemd[1]: Failed to insert module 'ip_tables': Operation not permitted",
+        "analyze": "Known issue",
+        "branch": "rhel8",
+        "status": "inactive",
+        "link": "https://bugzilla.redhat.com/show_bug.cgi?id=1600903",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_5": {
+        "content": "RAS: Correctable Errors collector initialized.",
+        "analyze": "It is only a information with error keyword",
+        "branch": "rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_6": {
+        "content": "i8042: Warning: Keylock active",
+        "analyze": "It is mostly like a warning without any function impact, same in Amazon Linux 2",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_7": {
+        "content": "random: 7 urandom warning(s) missed due to ratelimiting",
+        "analyze": "Frequently seeing, no ec2 specified",
+        "branch": "rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_9": {
+        "content": "nvmet: failed to open block device /home/ec2-user/blktests/results/tmpdir.nvme.028.NcS/img: (-15)",
+        "analyze": "blktests generated",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_10": {
+        "content": "ena 0000:00:05.0: Elastic Network Adapter (ENA) v2.0.2K",
+        "analyze": "ena msg",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_11": {
+        "content": "ena: ena device version: 0.10",
+        "analyze": "ena msg",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_12": {
+        "content": "ena: ena controller version: 0.0.1 implementation version 1",
+        "analyze": "ena msg",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_13": {
+        "content": "ena 0000:00:05.0: creating 8 io queues. queue size: 1024. LLQ is ENABLED",
+        "analyze": "ena msg",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_14": {
+        "content": "ena 0000:00:05.0: Elastic Network Adapter (ENA) found at mem febf4000, mac addr 0a:6c:ef:80:b2:be Queues 8, Placement policy: Low Latency",
+        "analyze": "ena msg",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_15": {
+        "content": "ena 0000:00:05.0: enabling device (0010 -> 0012)",
+        "analyze": "ena arm msg",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_16": {
+        "content": "ACPI: NUMA: Failed to initialise from firmware",
+        "analyze": "arm specified msg",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_17": {
+        "content": "ena 0000:00:05.0: irq 45 for MSI/MSI-X",
+        "analyze": "ena message in i3en.6xlarge",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_18": {
+        "content": "ERST: Error Record Serialization Table (ERST) support is initialized.",
+        "analyze": "information only",
+        "branch": "rhel7",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_19": {
+        "content": "ena 0000:00:05.0: LLQ is not supported Fallback to host mode policy.",
+        "analyze": "t3",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_20": {
+        "content": "pci 0000:00:02.0: BAR 13: failed to assign [io  size 0x10000]",
+        "analyze": "appears in bare metal instance or esx platform, no functional impact",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "https://access.redhat.com/solutions/3144711",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_21": {
+        "content": "ipmi_si dmi-ipmi-si.0: Interface detection failed",
+        "analyze": "appears in bare metal instance",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_22": {
+        "content": "ena 0002:04:00.0: Adding to iommu group 53",
+        "analyze": "appears in arm bare metal instance",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_23": {
+        "content": "ena 0002:04:00.0: Linked as a consumer to arm-smmu.0.auto",
+        "analyze": "appears in arm bare metal instance",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_24": {
+        "content": "BERT: Boot Error Record Table support is disabled. Enable it by using bert_enable as kernel parameter.",
+        "analyze": "information only",
+        "branch": "rhel7",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_25": {
+        "content": "arm_spe_pmu arm,spe-v1: profiling buffer inaccessible. Try passing  kpti=off  on the kernel command line",
+        "analyze": "information only, manually set and pass",
+        "branch": "rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_26": {
+        "content": "arm_spe_pmu: probe of arm,spe-v1 failed with error -1",
+        "analyze": "information only, manually set and pass",
+        "branch": "rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_27": {
+        "content": "mcelog[873]: mcelog: ERROR: AMD Processor family 21: mcelog does not support this processor.  Please use the edac_mce_amd module instead.",
+        "analyze": "information only",
+        "branch": "rhel8",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_28": {
+        "content": "kdumpctl[1108]: Warning: There might not be enough space to save a vmcore.",
+        "analyze": "information only",
+        "branch": "rhel8,rhel7",
+        "status": "active",
+        "link": "",
+        "path": "dmesg or journal",
+        "trigger": ""
+    },
+    "msg_29": {
+        "content": "augenrules[681]: failure 1",
+        "analyze": "information only",
+        "branch": "rhel8,rhel7",
+        "status": "active",
+        "link": "https://access.redhat.com/solutions/3343401",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_30": {
+        "content": "dbus-daemon[767]: [system] Activation via systemd failed for unit 'dbus-org.freedesktop.resolve1.service': Unit dbus-org.freedesktop.resolve1.service not found.",
+        "analyze": "information only",
+        "branch": "rhel8,rhel7",
+        "status": "active",
+        "link": "https://bugzilla.redhat.com/show_bug.cgi?id=1855252",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_31": {
+        "content": "systemd-vconsole-setup[316]: KD_FONT_OP_GET failed while trying to get the font metadata: Function not implemented",
+        "analyze": "know bug before RHEL-8.4",
+        "branch": "rhel8.4-",
+        "status": "active",
+        "link": "https://access.redhat.com/solutions/4907991",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_32": {
+        "content": "rngd[780]: Failed to init entropy source hwrng",
+        "analyze": "Expected if no hwrng device present, cat /dev/hwrng, /sys/devices/virtual/misc/hw_random/rng_available",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "https://bugzilla.redhat.com/show_bug.cgi?id=1679010",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_33": {
+        "content": "sshd[5433]: error: kex_exchange_identification: banner line contains invalid characters",
+        "analyze": "Maybe triggered by some scan software, will research more",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_34": {
+        "content": "sshd[5433]: error: send_error: write: Connection reset by peer",
+        "analyze": "Maybe triggered by some scan software, will research more",
+        "branch": "rhel7,rhel8",
+        "status": "active",
+        "link": "",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_35": {
+        "content": "dbus-daemon[8161]: [system] Failed to reset fd limit before activating service: org.freedesktop.DBus.Error.AccessDenied: Failed to restore old fd limit: Operation not permitted",
+        "analyze": "Known issue",
+        "branch": "rhel8",
+        "status": "active",
+        "link": "https://bugzilla.redhat.com/show_bug.cgi?id=1839753",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_36": {
+        "content": "WARNING, didn't collect load info for all cpus, balancing is broken",
+        "analyze": "Usually triggered by cpuhotplug test",
+        "branch": "rhel8",
+        "status": "active",
+        "link": "https://bugzilla.redhat.com/show_bug.cgi?id=1839753",
+        "path": "journal",
+        "trigger": "cpuhotplug"
+    },
+    "msg_37": {
+        "content": "gnome-shell[1682]: Getting invalid resource scale property",
+        "analyze": "Information only",
+        "branch": "rhel8",
+        "status": "active",
+        "link": "",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_38": {
+        "content": "systemd[1]: /usr/lib/systemd/system/systemd-resolved.service:33: Unknown lvalue 'ProtectSystems' in section 'Service'",
+        "analyze": "Known bug",
+        "branch": "rhel8.3",
+        "status": "active",
+        "link": "https://bugzilla.redhat.com/show_bug.cgi?id=1871139",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_39": {
+        "content": "crond[1100]: (root) FAILED (loading cron table)",
+        "analyze": "Known bug",
+        "branch": "rhel8.3",
+        "status": "active",
+        "link": "https://bugzilla.redhat.com/show_bug.cgi?id=1879368",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_40": {
+        "content": "psmouse serio1: trackpoint: failed to get extended button data, assuming 3 buttons",
+        "analyze": "It is a harmless message. You can ignore it.",
+        "branch": "rhel",
+        "status": "active",
+        "link": "https://access.redhat.com/solutions/2023283",
+        "path": "dmesg",
+        "trigger": ""
+    },
+    "msg_41": {
+        "content": "org.gnome.Shell.desktop[1578]: libEGL warning: DRI2: failed to create dri screen",
+        "analyze": "Known issue",
+        "branch": "rhel",
+        "status": "active",
+        "link": "https://bugzilla.redhat.com/show_bug.cgi?id=1877997",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_42": {
+        "content": "gnome-shell[1578]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Do not want to use software renderer (llvmpipe (LLVM 10.0.1, 256 bits)), falling back to CPU copy path",
+        "analyze": "Known issue",
+        "branch": "rhel",
+        "status": "active",
+        "link": "https://bugzilla.redhat.com/show_bug.cgi?id=1877997",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_43": {
+        "content": "gnome-shell[1578]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation",
+        "analyze": "This message appears when GNOME location services is disabled. This message can be safely ignored.",
+        "branch": "rhel",
+        "status": "active",
+        "link": "https://access.redhat.com/solutions/4831511",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_44": {
+        "content": "org.gnome.Shell.desktop[1578]: Errors from xkbcomp are not fatal to the X server",
+        "analyze": "Known bug.",
+        "branch": "rhel",
+        "status": "active",
+        "link": "https://bugzilla.redhat.com/show_bug.cgi?id=1780463",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_45": {
+        "content": "org.gnome.Shell.desktop[1578]: > Warning:          Could not resolve keysym XF86MonBrightnessCycle",
+        "analyze": "Known issue",
+        "branch": "rhel",
+        "status": "active",
+        "link": "https://bugzilla.redhat.com/show_bug.cgi?id=1780463",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_46": {
+        "content": "gnome-shell[1578]: JS WARNING: [resource:///org/gnome/shell/ui/windowManager.js 1643]: reference to undefined property 'MetaWindowXwayland'",
+        "analyze": "This warning is harmless",
+        "branch": "rhel",
+        "status": "active",
+        "link": "https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/1314",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_47": {
+        "content": "org.gnome.Shell.desktop[1578]: Failed to initialize glamor, falling back to sw",
+        "analyze": "I think this warning is harmless because exists on other platform too. eg. 1730315",
+        "branch": "rhel",
+        "status": "active",
+        "link": "",
+        "path": "journal",
+        "trigger": "Missing Wayland requirements for glamor"
+    },
+    "msg_48": {
+        "content": "colord[1817]: failed to get edid data: EDID length is too small",
+        "analyze": "It may not a bug.",
+        "branch": "rhel",
+        "status": "active",
+        "link": "https://bugzilla.redhat.com/show_bug.cgi?id=1368291",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_49": {
+        "content": "gsd-color[1745]: failed to get edid: unable to get EDID for output",
+        "analyze": "Wont fix bug.",
+        "branch": "rhel",
+        "status": "active",
+        "link": "https://bugzilla.redhat.com/show_bug.cgi?id=1332997",
+        "path": "journal",
+        "trigger": "EDID length is too small"
+    },
+    "msg_50": {
+        "content": "sshd[1621]: reverse mapping checking getaddrinfo for nat-pool-xxx.xxx.redhat.com [00.000.000.000] failed - POSSIBLE BREAK-IN ATTEMPT!",
+        "analyze": "There is (most likely) no 'attack' occurring when this message is displayed.",
+        "branch": "rhel",
+        "status": "active",
+        "link": "https://access.redhat.com/solutions/83933",
+        "path": "journal",
+        "trigger": ""
+    },
+    "msg_51": {
+        "content": "kernel: CPU features: detected: Instruction cache invalidation not required for I/D coherence",
+        "analyze": "Information only",
+        "branch": "rhel",
+        "status": "active",
+        "link": "",
+        "path": "journal",
+        "trigger": ""
+    }
+}
